@@ -1,18 +1,27 @@
 // Simple Firebase connection test
+// Loads Firebase config from .env.local
+require('dotenv').config({ path: '.env.local' });
 const { initializeApp } = require('firebase/app');
 const { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } = require('firebase/firestore');
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCJxY5Xz6bTMzHelLXuyTJK0hBK7MvlP8Y",
-  authDomain: "deep-analyzer-390e7.firebaseapp.com",
-  projectId: "deep-analyzer-390e7",
-  storageBucket: "deep-analyzer-390e7.firebasestorage.app",
-  messagingSenderId: "899258306632",
-  appId: "1:899258306632:web:5e34d6b0de6a3f8920487d"
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
 };
 
 async function testFirebase() {
   console.log('\n🔥 Testing Firebase Connection...\n');
+
+  // Check if environment variables are loaded
+  if (!firebaseConfig.apiKey) {
+    console.error('❌ ERROR: Firebase configuration not found in .env.local');
+    console.error('Make sure .env.local exists with all NEXT_PUBLIC_FIREBASE_* variables');
+    process.exit(1);
+  }
 
   try {
     // Initialize Firebase
@@ -47,9 +56,10 @@ async function testFirebase() {
     console.error('\n❌ FIREBASE TEST FAILED:\n');
     console.error('Error:', error.message);
     console.error('\nCommon issues:');
-    console.error('1. Firestore Database not created - Go to Firebase Console → Build → Firestore Database → Create database');
-    console.error('2. Security rules not set - Go to Firestore Database → Rules tab → Publish the rules');
-    console.error('3. Wrong project - Check that you\'re using project: deep-analyzer-390e7');
+    console.error('1. Missing .env.local file - Copy from .env.example and fill in your Firebase credentials');
+    console.error('2. Firestore Database not created - Go to Firebase Console → Build → Firestore Database → Create database');
+    console.error('3. Security rules not set - Go to Firestore Database → Rules tab → Publish the rules');
+    console.error('4. Wrong Firebase config - Check your .env.local has correct NEXT_PUBLIC_FIREBASE_* values');
     console.error('\n');
     process.exit(1);
   }

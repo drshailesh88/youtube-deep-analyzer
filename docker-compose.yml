@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  # Python transcript service
+  transcript-service:
+    build: ./transcript-service
+    ports:
+      - "5001:5001"
+    environment:
+      - FLASK_ENV=production
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # Next.js application (optional - for full stack deployment)
+  # Uncomment if you want to run the Next.js app in Docker too
+  # nextjs-app:
+  #   build: .
+  #   ports:
+  #     - "3005:3005"
+  #   environment:
+  #     - TRANSCRIPT_SERVICE_URL=http://transcript-service:5001
+  #     - YOUTUBE_DATA_API_KEY=${YOUTUBE_DATA_API_KEY}
+  #     - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+  #     - NEXT_PUBLIC_FIREBASE_API_KEY=${NEXT_PUBLIC_FIREBASE_API_KEY}
+  #     - NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=${NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN}
+  #     - NEXT_PUBLIC_FIREBASE_PROJECT_ID=${NEXT_PUBLIC_FIREBASE_PROJECT_ID}
+  #     - NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=${NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET}
+  #     - NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=${NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID}
+  #     - NEXT_PUBLIC_FIREBASE_APP_ID=${NEXT_PUBLIC_FIREBASE_APP_ID}
+  #   depends_on:
+  #     transcript-service:
+  #       condition: service_healthy
+  #   restart: unless-stopped
