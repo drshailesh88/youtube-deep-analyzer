@@ -130,7 +130,7 @@ export function SentimentChart({ sentiment }: SentimentChartProps) {
               {sentiment.positiveDrivers.slice(0, 3).map((driver, i) => (
                 <li key={i} className="text-sm text-slate-300 flex items-start gap-2">
                   <span className="text-emerald-400 mt-1">+</span>
-                  {driver}
+                  {typeof driver === 'string' ? driver : driver.driver}
                 </li>
               ))}
             </ul>
@@ -147,7 +147,7 @@ export function SentimentChart({ sentiment }: SentimentChartProps) {
               {sentiment.negativeDrivers.slice(0, 3).map((driver, i) => (
                 <li key={i} className="text-sm text-slate-300 flex items-start gap-2">
                   <span className="text-red-400 mt-1">-</span>
-                  {driver}
+                  {typeof driver === 'string' ? driver : driver.driver}
                 </li>
               ))}
             </ul>

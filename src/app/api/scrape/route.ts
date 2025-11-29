@@ -64,7 +64,8 @@ export async function POST(request: NextRequest) {
 
     while (comments.length < limit) {
       try {
-        const commentsResponse = await youtube.commentThreads.list({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const commentsResponse: any = await youtube.commentThreads.list({
           key: apiKey,
           part: ['snippet'],
           videoId: videoId,

@@ -52,8 +52,51 @@ export interface ScrapedData {
 }
 
 // ============================================
-// ANALYSIS TYPES
+// AUDIENCE PROFILE TYPES
 // ============================================
+
+export interface AudienceAvatar {
+  description: string;
+  skillLevel: 'beginner' | 'intermediate' | 'advanced' | 'mixed';
+  mainGoal: string;
+  currentSituation: string;
+  desiredOutcome: string;
+  evidenceFromComments: string[];
+}
+
+export interface SecondaryAvatar {
+  description: string;
+  percentage: string;
+  evidence: string[];
+}
+
+export interface AudienceProfile {
+  primaryAvatar: AudienceAvatar;
+  secondaryAvatars: SecondaryAvatar[];
+  surprisingInsight: string;
+}
+
+// ============================================
+// SENTIMENT TYPES
+// ============================================
+
+export interface EmotionalBreakdown {
+  gratitude: number;
+  excitement: number;
+  confusion: number;
+  frustration: number;
+  skepticism: number;
+  inspiration: number;
+}
+
+export interface SentimentDriver {
+  driver: string;
+  intensity: 'strong' | 'moderate' | 'mild';
+  frequency: number;
+  sampleComments: string[];
+  transcriptReference?: string;
+  howToFix?: string;
+}
 
 export interface SentimentAnalysis {
   overall: 'positive' | 'negative' | 'mixed' | 'neutral';
@@ -63,75 +106,76 @@ export interface SentimentAnalysis {
     negative: number;
     neutral: number;
   };
-  positiveDrivers: string[];
-  negativeDrivers: string[];
-}
-
-export interface KnowledgeGap {
-  topic: string;
-  questionCount: number;
-  sampleQuestions: string[];
-  suggestedContent: string;
-  relatedTranscriptSection?: string;
-}
-
-export interface DemandSignal {
-  request: string;
-  frequency: number;
-  urgency: 'high' | 'medium' | 'low';
-  sampleComments: string[];
-  businessPotential: string;
-}
-
-export interface MythMisconception {
-  myth: string;
-  prevalence: number;
-  correction: string;
-  sampleComments: string[];
-  transcriptReference?: string;
-}
-
-export interface PainPoint {
-  problem: string;
-  intensity: 'severe' | 'moderate' | 'mild';
-  frequency: number;
-  sampleComments: string[];
-  potentialSolution: string;
-}
-
-export interface ContentResonance {
-  whatWorked: ResonanceItem[];
-  whatFlopped: ResonanceItem[];
-}
-
-export interface ResonanceItem {
-  aspect: string;
-  evidence: string[];
-  sentiment: 'positive' | 'negative';
-  transcriptTimestamp?: string;
+  emotionalBreakdown?: EmotionalBreakdown;
+  emotionalJourney?: Array<{
+    timestamp: string;
+    emotion: string;
+    trigger: string;
+    evidence: string[];
+  }>;
+  positiveDrivers: SentimentDriver[];
+  negativeDrivers: SentimentDriver[];
 }
 
 // ============================================
-// NEW: TRANSCRIPT-ENHANCED ANALYSIS TYPES
+// HOOK ANALYSIS TYPES
 // ============================================
+
+export interface HookAttentionGrab {
+  score: number;
+  whatWorked: string;
+  whatFailed: string;
+  viewerReactions: string[];
+}
+
+export interface HookClarityOfPromise {
+  score: number;
+  promiseMade: string;
+  isPromiseClear: boolean;
+  viewerExpectations: string[];
+}
+
+export interface HookCuriosity {
+  score: number;
+  openLoops: string[];
+  tensionBuilt: string;
+}
+
+export interface ImprovedHook {
+  script: string;
+  whyBetter: string;
+  psychologicalTriggers: string[];
+}
 
 export interface HookAnalysis {
-  hookType: 'curiosity' | 'pain-point' | 'promise' | 'story' | 'question' | 'statistic' | 'contrast';
-  hookText: string;
-  effectiveness: 'strong' | 'moderate' | 'weak';
-  clarityScore: number;
-  timeToHook: number;
-  commentFeedback: string[];
-  improvements: string[];
+  hookTimestamp?: string;
+  hookTranscript?: string;
+  hookType: 'curiosity' | 'pain-agitation' | 'promise' | 'story' | 'question' | 'statistic' | 'pattern-interrupt' | 'contrast' | 'controversy' | 'pain-point';
+  hookStrength?: number;
+  effectiveness?: 'strong' | 'moderate' | 'weak';
+  clarityScore?: number;
+  timeToHook?: number;
+  hookAnalysis?: {
+    attentionGrab: HookAttentionGrab;
+    clarityOfPromise: HookClarityOfPromise;
+    curiosityGenerated: HookCuriosity;
+    timeToHook: number;
+    wastes: string[];
+  };
+  improvedHook?: ImprovedHook;
+  hookText?: string;
+  commentFeedback?: string[];
+  improvements?: string[];
 }
 
-export interface ScriptStructure {
-  totalSections: number;
-  sections: ScriptSection[];
-  flowScore: number;
-  transitionQuality: 'smooth' | 'adequate' | 'choppy';
-  logicalGaps: string[];
-  redundancies: string[];
+// ============================================
+// SCRIPT STRUCTURE TYPES
+// ============================================
+
+export interface SectionViewerReactions {
+  positive: string[];
+  negative: string[];
+  questions: string[];
 }
 
 export interface ScriptSection {
@@ -139,11 +183,17 @@ export interface ScriptSection {
   title: string;
   startTime: string;
   endTime: string;
-  duration: number;
-  content: string;
+  duration: string | number;
   purpose: string;
-  relatedComments: SectionComment[];
-  sentimentInSection: 'positive' | 'negative' | 'neutral' | 'mixed';
+  summary?: string;
+  content?: string;
+  keyQuotes?: string[];
+  viewerReactions?: SectionViewerReactions;
+  relatedComments?: SectionComment[];
+  effectiveness?: number;
+  issues?: string[];
+  improvements?: string[];
+  sentimentInSection?: 'positive' | 'negative' | 'neutral' | 'mixed';
 }
 
 export interface SectionComment {
@@ -153,11 +203,142 @@ export interface SectionComment {
   timestamp?: string;
 }
 
+export interface StructureIssue {
+  issue: string;
+  location: string;
+  impact: string;
+  fix: string;
+}
+
+export interface ScriptStructure {
+  overallStructure?: string;
+  totalSections: number;
+  sections: ScriptSection[];
+  structureScore?: number;
+  flowScore?: number;
+  transitionQuality?: 'smooth' | 'adequate' | 'choppy';
+  structureIssues?: StructureIssue[];
+  missingElements?: string[];
+  unnecessaryElements?: string[];
+  logicalGaps?: string[];
+  redundancies?: string[];
+}
+
+// ============================================
+// CONTENT DELIVERY TYPES
+// ============================================
+
+export interface PacingIssue {
+  timestamp: string;
+  issue: string;
+  transcript?: string;
+  description?: string;
+  wordsPerMinute?: number;
+  viewerFeedback?: string[];
+  fix?: string;
+}
+
+export interface PacingAnalysis {
+  overallPace: 'too-fast' | 'optimal' | 'too-slow' | 'inconsistent';
+  averageWPM?: number;
+  averageWordsPerMinute?: number;
+  pacingIssues?: PacingIssue[];
+  fastSections?: PacingIssue[];
+  slowSections?: PacingIssue[];
+  commentFeedback?: string[];
+}
+
+export interface ConfusingMoment {
+  timestamp: string;
+  transcript: string;
+  whyConfusing: string;
+  viewerConfusion: string[];
+  clearerVersion: string;
+}
+
+export interface ClarityAnalysis {
+  overallClarity: number;
+  confusingMoments: ConfusingMoment[];
+  jargonUsed: string[];
+  assumptionsMade: string[];
+}
+
+export interface EnergyDip {
+  timestamp: string;
+  issue: string;
+  viewerReactions: string[];
+}
+
+export interface EnergyAndTone {
+  overallEnergy: 'low' | 'medium' | 'high' | 'variable';
+  toneMatch: string;
+  energyDips: EnergyDip[];
+  recommendations: string[];
+}
+
+export interface EngagementTechniques {
+  techniquesUsed: string[];
+  techniquesEffectiveness: string;
+  missingTechniques: string[];
+  viewerEngagementComments: string[];
+}
+
+export interface ContentDelivery {
+  pacingAnalysis: PacingAnalysis;
+  clarityAnalysis?: ClarityAnalysis;
+  engagementTechniques?: EngagementTechniques;
+  energyAndTone?: EnergyAndTone;
+}
+
+// ============================================
+// CONTENT GAPS TYPES
+// ============================================
+
+export interface PromiseVsDeliveryGap {
+  promised: string;
+  delivered: string;
+  viewerReactions: string[];
+  howToFix: string;
+}
+
+export interface PromiseVsDelivery {
+  titlePromise: string;
+  thumbnailPromise?: string;
+  hookPromise: string;
+  actualDelivery: string;
+  matchScore: number;
+  gaps: PromiseVsDeliveryGap[];
+}
+
+export interface MissingContent {
+  topic: string;
+  evidence: string[];
+  shouldHaveBeenAt: string;
+  howToInclude: string;
+}
+
+export interface UnnecessaryContent {
+  content: string;
+  timestamp: string;
+  whyCut: string;
+  viewerSkipIndicators: string[];
+}
+
+export interface UnexpectedValue {
+  content: string;
+  viewerReactions: string[];
+  howToExpand: string;
+}
+
 export interface ContentGapAnalysis {
-  promisedContent: string[];
-  deliveredContent: string[];
-  missingPieces: ContentGap[];
-  unexpectedBonuses: string[];
+  promiseVsDelivery?: PromiseVsDelivery;
+  promisedContent?: string[];
+  deliveredContent?: string[];
+  missingContent?: MissingContent[];
+  missingPieces?: ContentGap[];
+  unnecessaryContent?: UnnecessaryContent[];
+  unexpectedValue?: UnexpectedValue[];
+  unexpectedBonuses?: string[];
 }
 
 export interface ContentGap {
@@ -168,37 +349,321 @@ export interface ContentGap {
   recommendation: string;
 }
 
-export interface PacingAnalysis {
-  overallPace: 'too-fast' | 'optimal' | 'too-slow' | 'inconsistent';
-  averageWordsPerMinute: number;
-  fastSections: PacingSection[];
-  slowSections: PacingSection[];
-  commentFeedback: string[];
-}
+// ============================================
+// ENGAGEMENT PREDICTION TYPES
+// ============================================
 
-export interface PacingSection {
+export interface RetentionMoment {
   timestamp: string;
-  description: string;
-  wordsPerMinute: number;
-}
-
-export interface EngagementPrediction {
-  predictedDropOffPoints: DropOffPoint[];
-  highEngagementMoments: EngagementMoment[];
-  retentionTips: string[];
+  content: string;
+  whyStrong?: string;
+  reason?: string;
+  evidence: string[];
 }
 
 export interface DropOffPoint {
   timestamp: string;
-  reason: string;
-  severity: 'high' | 'medium' | 'low';
+  content?: string;
+  whyDropOff?: string;
+  reason?: string;
+  severity: 'critical' | 'moderate' | 'minor' | 'high' | 'medium' | 'low';
+  evidence?: string[];
   fix: string;
+}
+
+export interface ReplayMoment {
+  timestamp: string;
+  content: string;
+  whyReplay: string;
+  evidence: string[];
+}
+
+export interface CTAEffectiveness {
+  ctaTimestamp: string;
+  ctaTranscript: string;
+  ctaType: string;
+  effectiveness: number;
+  viewerResponse: string[];
+  improvedCTA: string;
+}
+
+export interface RetentionCurve {
+  predictedPattern: string;
+  strongRetentionMoments: RetentionMoment[];
+  dropOffPoints: DropOffPoint[];
+}
+
+export interface EngagementPrediction {
+  retentionCurve?: RetentionCurve;
+  predictedDropOffPoints?: DropOffPoint[];
+  highEngagementMoments?: EngagementMoment[];
+  replayMoments?: ReplayMoment[];
+  ctaEffectiveness?: CTAEffectiveness;
+  retentionTips?: string[];
 }
 
 export interface EngagementMoment {
   timestamp: string;
   reason: string;
   commentEvidence: string[];
+}
+
+// ============================================
+// PAIN POINTS & DESIRES TYPES
+// ============================================
+
+export interface VideoIdea {
+  title: string;
+  hook: string;
+  angle?: string;
+  keyPoints?: string[];
+  differentiator?: string;
+}
+
+export interface ContentOpportunity {
+  title: string;
+  hook: string;
+  angle?: string;
+}
+
+export interface AddressedInVideo {
+  wasAddressed: boolean;
+  timestamp?: string;
+  howWellAddressed?: number;
+  whatWasSaid?: string;
+  viewerSatisfaction?: string;
+  effectiveness?: number;
+}
+
+export interface PainPoint {
+  pain: string;
+  problem?: string;
+  intensity: 'severe' | 'moderate' | 'mild';
+  frequency: number;
+  emotionalWeight?: string;
+  sampleComments: string[];
+  rootCause?: string;
+  desiredSolution?: string;
+  addressedInVideo?: AddressedInVideo;
+  contentOpportunity?: ContentOpportunity;
+  proposedTitle?: string;
+  proposedHook?: string;
+  potentialSolution?: string;
+}
+
+export interface AudienceDesire {
+  desire: string;
+  urgency: 'desperate' | 'strong' | 'moderate' | 'casual';
+  frequency: number;
+  currentBlocker?: string;
+  sampleComments: string[];
+  addressedInVideo?: AddressedInVideo;
+  contentOpportunity?: ContentOpportunity;
+  contentAngle?: string;
+  proposedTitle?: string;
+  proposedHook?: string;
+}
+
+export interface Objection {
+  objection: string;
+  frequency: number;
+  validity: 'valid' | 'partially-valid' | 'misconception';
+  sampleComments: string[];
+  addressedInVideo?: AddressedInVideo;
+  howToAddress?: string;
+  betterResponse?: string;
+  preventionStrategy?: string;
+}
+
+// ============================================
+// KNOWLEDGE GAPS & DEMAND TYPES
+// ============================================
+
+export interface RelatedTranscriptMoment {
+  timestamp: string;
+  whatWasSaid: string;
+  whyConfusing: string;
+}
+
+export interface KnowledgeGap {
+  topic: string;
+  confusionLevel?: 'completely-lost' | 'partially-confused' | 'needs-clarification';
+  frequency?: number;
+  questionCount?: number;
+  sampleQuestions: string[];
+  whatTheyThink?: string;
+  whatTheyNeed?: string;
+  explanationStrategy?: string;
+  relatedTranscriptMoment?: RelatedTranscriptMoment;
+  relatedTranscriptSection?: string;
+  videoIdea?: VideoIdea;
+  suggestedContent?: string;
+}
+
+export interface DemandSignal {
+  request: string;
+  frequency: number;
+  urgency: 'high' | 'medium' | 'low';
+  willingness?: string;
+  sampleComments: string[];
+  relatedToVideoMoment?: string;
+  videoIdea?: VideoIdea;
+  businessPotential?: string;
+}
+
+// ============================================
+// RESONANCE & VIRAL TYPES
+// ============================================
+
+export interface QuotableLine {
+  timestamp: string;
+  quote: string;
+  whyQuotable: string;
+  viewerReactions: string[];
+  howToReplicate: string;
+}
+
+export interface ResonanceItem {
+  element: string;
+  aspect?: string;
+  timestamp?: string;
+  transcript?: string;
+  whyItWorked?: string;
+  whyItFailed?: string;
+  evidence: string[];
+  howToReplicate?: string;
+  howToFix?: string;
+  sentiment?: 'positive' | 'negative';
+  transcriptTimestamp?: string;
+}
+
+export interface ContentResonance {
+  whatWorked: ResonanceItem[];
+  whatFlopped: ResonanceItem[];
+}
+
+export interface ViralElements {
+  shareabilityScore: number;
+  shareabilityReason: string;
+  quotableLines: string[];
+  controversialPoints: string[];
+  emotionalPeaks: string[];
+  memeability: string;
+}
+
+// ============================================
+// COMPETITOR & SUBSCRIBER TYPES
+// ============================================
+
+export interface CompetitorMention {
+  competitor: string;
+  context: string;
+  sentiment: 'positive' | 'negative' | 'neutral';
+  frequency: number;
+  strategicInsight: string;
+}
+
+export interface SubscriberConversion {
+  newSubscriberIndicators: number;
+  subscribeResistance: string[];
+  subscribeTriggers: string[];
+  ctaEffectiveness: string;
+}
+
+// ============================================
+// NEXT VIDEO BLUEPRINT TYPES
+// ============================================
+
+export interface BlueprintHook {
+  type: string;
+  script: string;
+  psychologicalTriggers: string[];
+}
+
+export interface BlueprintSection {
+  section: string;
+  duration: string;
+  content: string;
+  technique: string;
+}
+
+export interface HighestPotentialTopic {
+  topic: string;
+  whyThisTopic: string;
+  title: string;
+  thumbnailConcept?: string;
+  thumbnail?: string;
+  hook: BlueprintHook | string;
+  outline: BlueprintSection[] | string[];
+  mustInclude: string[];
+  mustAvoid: string[];
+  callToAction?: string;
+  predictedPerformance: string;
+}
+
+export interface AlternativeTopic {
+  topic: string;
+  title: string;
+  hook: string;
+  evidence: string;
+  angle?: string;
+  differentiator?: string;
+}
+
+export interface NextVideoBlueprint {
+  highestPotentialTopic: HighestPotentialTopic;
+  alternativeTopics: AlternativeTopic[];
+}
+
+// ============================================
+// SCRIPT IMPROVEMENTS TYPES
+// ============================================
+
+export interface ScriptIssue {
+  issue: string;
+  timestamp: string;
+  currentScript: string;
+  improvedScript: string;
+  expectedImpact: string;
+}
+
+export interface LengthRecommendation {
+  currentLength: string;
+  optimalLength: string;
+  reasoning: string;
+}
+
+export interface ScriptImprovements {
+  overallScore: number;
+  topIssues: ScriptIssue[];
+  structureRecommendation: string;
+  lengthRecommendation: LengthRecommendation;
+}
+
+// ============================================
+// RECOMMENDATION TYPES
+// ============================================
+
+export interface TopRecommendation {
+  priority: number;
+  category?: 'hook' | 'structure' | 'content' | 'delivery' | 'cta';
+  recommendation: string;
+  reasoning: string;
+  implementation: string;
+  exampleScript?: string;
+  expectedImpact: string;
+}
+
+// ============================================
+// LEGACY TYPES (for backward compatibility)
+// ============================================
+
+export interface MythMisconception {
+  myth: string;
+  prevalence: number;
+  correction: string;
+  sampleComments: string[];
+  transcriptReference?: string;
 }
 
 // ============================================
@@ -209,7 +674,9 @@ export interface DeepAnalysisResult {
   // Video metadata
   videoId: string;
   videoTitle: string;
+  channelName?: string;
   analyzedAt: string;
+  model?: string;
   
   // Data sources used
   dataSourcesSummary: {
@@ -217,25 +684,42 @@ export interface DeepAnalysisResult {
     transcriptAvailable: boolean;
     transcriptDuration?: string;
     transcriptWordCount?: number;
+    wordsPerMinute?: number;
+    analysisDepth?: string;
   };
   
-  // Original analysis (comment-based)
+  // Audience insights
+  audienceProfile?: AudienceProfile;
   sentiment: SentimentAnalysis;
+  painPoints: PainPoint[];
+  audienceDesires?: AudienceDesire[];
+  objections?: Objection[];
   knowledgeGaps: KnowledgeGap[];
   demandSignals: DemandSignal[];
-  myths: MythMisconception[];
-  painPoints: PainPoint[];
-  resonance: ContentResonance;
   
-  // NEW: Transcript-enhanced analysis
+  // Content analysis
   hookAnalysis?: HookAnalysis;
   scriptStructure?: ScriptStructure;
+  contentDelivery?: ContentDelivery;
   contentGaps?: ContentGapAnalysis;
-  pacingAnalysis?: PacingAnalysis;
   engagementPrediction?: EngagementPrediction;
+  pacingAnalysis?: PacingAnalysis;
   
-  // Actionable recommendations
-  topRecommendations: string[];
+  // Resonance & viral
+  quotableLines?: QuotableLine[];
+  resonance: ContentResonance;
+  viralElements?: ViralElements;
+  competitorMentions?: CompetitorMention[];
+  subscriberConversion?: SubscriberConversion;
+  
+  // Actionable outputs
+  nextVideoBlueprint?: NextVideoBlueprint;
+  scriptImprovements?: ScriptImprovements;
+  topRecommendations: TopRecommendation[] | string[];
+  blindSpots?: string[];
+  
+  // Legacy fields
+  myths: MythMisconception[];
   contentIdeas: string[];
 }
 
@@ -262,6 +746,31 @@ export interface AnalyzeResponse {
   error?: string;
 }
 
+export interface SaveHistoryRequest {
+  videoId: string;
+  videoTitle: string;
+  videoChannel?: string;
+  videoUrl: string;
+  modelUsed: string;
+  totalComments?: number;
+  analysis: DeepAnalysisResult;
+  tokensUsed?: {
+    prompt: number;
+    completion: number;
+    total: number;
+  };
+}
+
+export interface HistoryItem {
+  id: string;
+  videoId: string;
+  videoTitle: string;
+  videoChannel: string;
+  modelUsed: string;
+  totalComments: number;
+  createdAt: string;
+}
+
 // ============================================
 // UI STATE TYPES
 // ============================================
@@ -280,213 +789,179 @@ export interface AnalysisProgress {
   progress: number;
 }
 
-export type AIModel =
-  // Free models
-  | 'x-ai/grok-4.1-fast:free'
-  | 'openai/gpt-oss-20b:free'
-  | 'z-ai/glm-4.5-air:free'
-  // Paid models
-  | 'google/gemini-3-pro-preview'
-  | 'openai/gpt-5.1'
-  | 'openai/gpt-4o-mini'
-  | 'openai/gpt-4o'
-  | 'openai/gpt-oss-120b:exacto'
-  | 'anthropic/claude-haiku-4.5'
-  | 'anthropic/claude-opus-4.5'
-  | 'anthropic/claude-sonnet-4.5'
-  | 'anthropic/claude-sonnet-4'
-  | 'x-ai/grok-4'
-  | 'x-ai/grok-3-mini'
-  | 'x-ai/grok-4-fast'
-  | 'z-ai/glm-4.6'
-  | 'z-ai/glm-4.5';
+export type AIModel = string;
 
 export interface ModelOption {
-  id: AIModel;
+  id: string;
   name: string;
   description: string;
   contextWindow: string;
-  costTier: 'free' | 'low' | 'medium' | 'high';
   category: 'free' | 'paid';
+  costTier: 'free' | 'low' | 'medium' | 'high';
 }
 
 export const AI_MODELS: ModelOption[] = [
-  // Free Models
+  // FREE Models (3 total - Default: Grok 4.1 Fast)
   {
     id: 'x-ai/grok-4.1-fast:free',
     name: 'Grok 4.1 Fast (Free)',
-    description: 'Fast & free - Default model',
-    contextWindow: '128K tokens',
-    costTier: 'free',
-    category: 'free'
+    description: 'Default, 2M context, agentic',
+    contextWindow: '2M tokens',
+    category: 'free',
+    costTier: 'free'
   },
   {
     id: 'openai/gpt-oss-20b:free',
     name: 'GPT OSS 20B (Free)',
-    description: 'Open source model, free tier',
-    contextWindow: '64K tokens',
-    costTier: 'free',
-    category: 'free'
+    description: 'Open source, 20B params',
+    contextWindow: '128K tokens',
+    category: 'free',
+    costTier: 'free'
   },
   {
     id: 'z-ai/glm-4.5-air:free',
     name: 'GLM 4.5 Air (Free)',
-    description: 'Lightweight & free',
+    description: 'Zhipu AI lightweight',
     contextWindow: '128K tokens',
-    costTier: 'free',
-    category: 'free'
+    category: 'free',
+    costTier: 'free'
   },
-  // Paid Models - Google
+
+  // PAID Models - Google (3 models)
   {
     id: 'google/gemini-3-pro-preview',
     name: 'Gemini 3 Pro',
-    description: 'Highest quality, 2M context window',
-    contextWindow: '2M tokens',
-    costTier: 'high',
-    category: 'paid'
+    description: 'Latest, 1M context',
+    contextWindow: '1M tokens',
+    category: 'paid',
+    costTier: 'high'
   },
-  // Paid Models - OpenAI
+  {
+    id: 'google/gemini-2.5-pro-preview-06-05',
+    name: 'Gemini 2.5 Pro',
+    description: 'High quality',
+    contextWindow: '1M tokens',
+    category: 'paid',
+    costTier: 'high'
+  },
+  {
+    id: 'google/gemini-2.5-flash-preview-05-20',
+    name: 'Gemini 2.5 Flash',
+    description: 'Fast & cheap',
+    contextWindow: '1M tokens',
+    category: 'paid',
+    costTier: 'medium'
+  },
+
+  // PAID Models - OpenAI (4 models)
   {
     id: 'openai/gpt-5.1',
     name: 'GPT-5.1',
-    description: 'Latest GPT model',
-    contextWindow: '200K tokens',
-    costTier: 'high',
-    category: 'paid'
-  },
-  {
-    id: 'openai/gpt-4o',
-    name: 'GPT-4o',
-    description: 'Multimodal flagship',
-    contextWindow: '128K tokens',
-    costTier: 'medium',
-    category: 'paid'
+    description: 'Most advanced, 400K context',
+    contextWindow: '400K tokens',
+    category: 'paid',
+    costTier: 'high'
   },
   {
     id: 'openai/gpt-4o-mini',
     name: 'GPT-4o Mini',
-    description: 'Fast & affordable',
+    description: 'Compact, cost-effective',
     contextWindow: '128K tokens',
-    costTier: 'low',
-    category: 'paid'
+    category: 'paid',
+    costTier: 'low'
+  },
+  {
+    id: 'openai/gpt-4o',
+    name: 'GPT-4o',
+    description: 'Flagship multimodal',
+    contextWindow: '128K tokens',
+    category: 'paid',
+    costTier: 'medium'
   },
   {
     id: 'openai/gpt-oss-120b:exacto',
     name: 'GPT OSS 120B',
-    description: 'Large open source model',
+    description: 'Large open source',
     contextWindow: '128K tokens',
-    costTier: 'medium',
-    category: 'paid'
+    category: 'paid',
+    costTier: 'medium'
   },
-  // Paid Models - Anthropic
+
+  // PAID Models - Anthropic Claude (4 models)
+  {
+    id: 'anthropic/claude-haiku-4.5',
+    name: 'Claude Haiku 4.5',
+    description: 'Fastest, low latency',
+    contextWindow: '200K tokens',
+    category: 'paid',
+    costTier: 'low'
+  },
   {
     id: 'anthropic/claude-opus-4.5',
     name: 'Claude Opus 4.5',
-    description: 'Most capable Claude model',
+    description: 'Most capable',
     contextWindow: '200K tokens',
-    costTier: 'high',
-    category: 'paid'
+    category: 'paid',
+    costTier: 'high'
   },
   {
     id: 'anthropic/claude-sonnet-4.5',
     name: 'Claude Sonnet 4.5',
-    description: 'Balanced performance',
+    description: 'Balanced',
     contextWindow: '200K tokens',
-    costTier: 'medium',
-    category: 'paid'
+    category: 'paid',
+    costTier: 'medium'
   },
   {
     id: 'anthropic/claude-sonnet-4',
     name: 'Claude Sonnet 4',
-    description: 'Proven reliability',
+    description: 'Previous gen',
     contextWindow: '200K tokens',
-    costTier: 'medium',
-    category: 'paid'
+    category: 'paid',
+    costTier: 'medium'
   },
-  {
-    id: 'anthropic/claude-haiku-4.5',
-    name: 'Claude Haiku 4.5',
-    description: 'Fast & economical',
-    contextWindow: '200K tokens',
-    costTier: 'low',
-    category: 'paid'
-  },
-  // Paid Models - X.AI
+
+  // PAID Models - xAI Grok (3 models)
   {
     id: 'x-ai/grok-4',
     name: 'Grok 4',
-    description: 'Latest Grok model',
+    description: 'Flagship reasoning',
     contextWindow: '128K tokens',
-    costTier: 'high',
-    category: 'paid'
-  },
-  {
-    id: 'x-ai/grok-4-fast',
-    name: 'Grok 4 Fast',
-    description: 'Optimized for speed',
-    contextWindow: '128K tokens',
-    costTier: 'medium',
-    category: 'paid'
+    category: 'paid',
+    costTier: 'high'
   },
   {
     id: 'x-ai/grok-3-mini',
     name: 'Grok 3 Mini',
-    description: 'Compact & efficient',
-    contextWindow: '64K tokens',
-    costTier: 'low',
-    category: 'paid'
+    description: 'Compact version',
+    contextWindow: '128K tokens',
+    category: 'paid',
+    costTier: 'low'
   },
-  // Paid Models - Z.AI
+  {
+    id: 'x-ai/grok-4-fast',
+    name: 'Grok 4 Fast',
+    description: 'Optimized speed',
+    contextWindow: '128K tokens',
+    category: 'paid',
+    costTier: 'medium'
+  },
+
+  // PAID Models - Zhipu AI (2 models)
   {
     id: 'z-ai/glm-4.6',
     name: 'GLM 4.6',
-    description: 'Latest GLM release',
+    description: 'Latest version',
     contextWindow: '128K tokens',
-    costTier: 'medium',
-    category: 'paid'
+    category: 'paid',
+    costTier: 'medium'
   },
   {
     id: 'z-ai/glm-4.5',
     name: 'GLM 4.5',
-    description: 'Stable GLM version',
+    description: 'General purpose',
     contextWindow: '128K tokens',
-    costTier: 'low',
-    category: 'paid'
+    category: 'paid',
+    costTier: 'medium'
   }
 ];
-
-// ============================================
-// HISTORY / FIREBASE TYPES
-// ============================================
-
-export interface HistoryItem {
-  id: string;
-  videoId: string;
-  videoTitle: string;
-  videoChannel: string;
-  videoUrl: string;
-  modelUsed: string;
-  totalComments: number;
-  createdAt: string;
-  analysis?: DeepAnalysisResult;
-  tokensUsed?: {
-    prompt: number;
-    completion: number;
-    total: number;
-  };
-}
-
-export interface SaveHistoryRequest {
-  videoId: string;
-  videoTitle: string;
-  videoChannel: string;
-  videoUrl: string;
-  modelUsed: string;
-  totalComments: number;
-  analysis: DeepAnalysisResult;
-  tokensUsed?: {
-    prompt: number;
-    completion: number;
-    total: number;
-  };
-}

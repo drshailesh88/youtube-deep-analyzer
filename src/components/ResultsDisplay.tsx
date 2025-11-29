@@ -115,7 +115,7 @@ function OverviewTab({ analysis }: { analysis: DeepAnalysisResult }) {
             <h3 className="font-semibold text-white">What Worked</h3>
           </div>
           <div className="space-y-3">
-            {analysis.resonance.whatWorked.slice(0, 4).map((item, i) => (<ResonanceItem key={i} aspect={item.aspect} evidence={item.evidence} sentiment="positive" timestamp={item.transcriptTimestamp} />))}
+            {analysis.resonance.whatWorked.slice(0, 4).map((item, i) => (<ResonanceItem key={i} aspect={item.aspect || item.element} evidence={item.evidence} sentiment="positive" timestamp={item.transcriptTimestamp || item.timestamp} />))}
             {analysis.resonance.whatWorked.length === 0 && <p className="text-sm text-slate-500">No patterns identified</p>}
           </div>
         </div>
@@ -125,7 +125,7 @@ function OverviewTab({ analysis }: { analysis: DeepAnalysisResult }) {
             <h3 className="font-semibold text-white">Areas to Improve</h3>
           </div>
           <div className="space-y-3">
-            {analysis.resonance.whatFlopped.slice(0, 4).map((item, i) => (<ResonanceItem key={i} aspect={item.aspect} evidence={item.evidence} sentiment="negative" timestamp={item.transcriptTimestamp} />))}
+            {analysis.resonance.whatFlopped.slice(0, 4).map((item, i) => (<ResonanceItem key={i} aspect={item.aspect || item.element} evidence={item.evidence} sentiment="negative" timestamp={item.transcriptTimestamp || item.timestamp} />))}
             {analysis.resonance.whatFlopped.length === 0 && <p className="text-sm text-slate-500">No patterns identified</p>}
           </div>
         </div>
@@ -169,7 +169,7 @@ function CommentsTab({ analysis }: { analysis: DeepAnalysisResult }) {
       </InsightCard>
       <InsightCard title="Pain Points" icon={<Frown className="w-5 h-5" />} color="#ef4444" badge={analysis.painPoints.length}>
         <div className="space-y-3">
-          {analysis.painPoints.map((p, i) => (<InsightItem key={i} title={p.problem} description={p.potentialSolution} samples={p.sampleComments} intensity={p.intensity} count={p.frequency} />))}
+          {analysis.painPoints.map((p, i) => (<InsightItem key={i} title={p.pain || p.problem || 'Unknown pain point'} description={p.desiredSolution || p.potentialSolution} samples={p.sampleComments} intensity={p.intensity} count={p.frequency} />))}
           {analysis.painPoints.length === 0 && <p className="text-sm text-slate-500">No pain points detected</p>}
         </div>
       </InsightCard>
@@ -186,7 +186,7 @@ function RecommendationsTab({ analysis }: { analysis: DeepAnalysisResult }) {
           {analysis.topRecommendations.map((rec, i) => (
             <div key={i} className="flex gap-3 p-3 rounded-lg bg-slate-800/30">
               <span className="w-6 h-6 rounded-full bg-sky-500/20 flex items-center justify-center text-sky-400 text-sm font-bold">{i+1}</span>
-              <p className="text-slate-200">{rec}</p>
+              <p className="text-slate-200">{typeof rec === 'string' ? rec : rec.recommendation}</p>
             </div>
           ))}
           {analysis.topRecommendations.length === 0 && <p className="text-sm text-slate-500">No recommendations available</p>}
